@@ -21,29 +21,47 @@ Crafted for seamless data transfers from external USB drives to network shared d
 
 ## SHA512 Checksums
 
-Verify the integrity of Dumps.exe and source code with these SHA512 checksums:
+Verify the integrity of Dumps.exe and source codes with these SHA512 checksums:
 
 ```
 6a6c03a24eceb86d8e0a76ef7eb6ccac7a5991a5786c37433eddc236106ad8dd82f133a3c62542372e5529824b6006c296a3cee201aa543e7392a8cf949ddc88  Dumps.exe
-452f10916a8d6cbef73ea0e2498a72c9e092a642e27f8239c3fa60518f30e6df68225d72f2ac871ce50e5d47028fe06218cf8e7bc95f8afb78aae4e2b424421c  Dumps.ps1
+837ee067d27bdb86afb5d2a5a41ee145a29854028cbc85101819258691d1bc38667dea18d7c34ac9c5b81b821b7599794dedb03a4c8dd7c582ad892a6b53cad5  Dumps.ps1
+02d822b60186022e28e4da5d62c2a4b52bcc8acf40fceae5afa67d77aa8d9da6d8e009795e5b8a1f976cf418f70ef8f634a51889cfab1ff487d7bf5e999da060  Verify.ps1
 ```
 
 ## Verifying Integrity
 
-To ensure files haven’t been tampered with, run:
+To ensure files haven’t been tampered with, verify their SHA512 hashes against the CHECKSUM file using one of these methods:
 
-```bash
+### 1. **Manual Verification**:
+  - Navigate to the directory containing Dumps.exe, Dumps.ps1, and CHECKSUM
+  - Compute hashes:
+```powershell
 Get-FileHash -Algorithm SHA512 Dumps.exe
 Get-FileHash -Algorithm SHA512 Dumps.ps1
+Get-FileHash -Algorithm SHA512 Verify.ps1
 ```
 
-Compare output with the provided checksums.
+Compare with hashes in CHECKSUM (view with Get-Content .\CHECKSUM).
+
+### 2. **Powershell Command**:
+  - Run this one-liner to automatically verify hashes:
+```powershell
+Get-Content .\CHECKSUM | ForEach-Object { $hash, $file = $_ -split '\s+'; if ((Get-FileHash -Algorithm SHA512 $file).Hash -eq $hash) { Write-Host "$file : OK" } else { Write-Host "$file : FAILED" } }
+```
+
+### 3. **Verification Script**:
+  - Use the provided script for automated verification:
+```powershell
+.\Verify.ps1
+```
+
 
 Note: If running the source script, ensure PowerShell execution policy allows scripts (Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned).
 
 ## Source Code
 
-The Dumps.ps1 source is included for transparency and customization. Modify as needed for specific workflows.
+The Dumps.ps1 and Verify.ps1 source is included for transparency and customization. Modify as needed for specific workflows.
 
 ## Contributing
 
